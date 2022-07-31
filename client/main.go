@@ -22,10 +22,7 @@ func main() {
 	c := pb.NewUserServiceClient(conn)
 
 	id := createUser(c)
-	fmt.Println("user id ", id)
-	//readBlog(c, id)
-	//readBlog(c, "aNonExistingID")
 	updateUser(c, id)
-	//listBlog(c)
-	//deleteBlog(c, id)
+	deleteUser(c, id)
+	fmt.Println("user id ", id)
 }
