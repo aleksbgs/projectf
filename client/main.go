@@ -25,7 +25,7 @@ func main() {
 	fmt.Println("user id ", id)
 	//readBlog(c, id)
 	//readBlog(c, "aNonExistingID")
-	//updateBlog(c, id)
+	updateUser(c, id)
 	//listBlog(c)
 	//deleteBlog(c, id)
 }
