@@ -48,8 +48,25 @@ service UserService {
     };
   }
   rpc ReadUser(UserId) returns (User);
-  rpc UpdateUser(User) returns (google.protobuf.Empty);
-  rpc DeleteUser(UserId) returns (google.protobuf.Empty);
+  rpc UpdateUser(User) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      put: "/v1/update_user/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to update a new user";
+      summary: "update user";
+    };
+  };
+  rpc DeleteUser(UserId) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/v1/delete_user/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to delete a user";
+      summary: "delete";
+    };
+  };
   rpc ListUsers(google.protobuf.Empty) returns (stream User);
 
 }

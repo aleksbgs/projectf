@@ -63,7 +63,7 @@ func runGatewayServer() {
 			UseProtoNames: true,
 		},
 		UnmarshalOptions: protojson.UnmarshalOptions{
-			DiscardUnknown: true,
+			DiscardUnknown: false,
 		},
 	})
 
