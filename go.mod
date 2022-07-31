@@ -4,7 +4,9 @@ go 1.18
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.1
+	github.com/rakyll/statik v0.1.7
 	go.mongodb.org/mongo-driver v1.9.0
+	google.golang.org/genproto v0.0.0-20220728213248-dd149ef739b9
 	google.golang.org/grpc v1.48.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.28.1
@@ -26,6 +28,5 @@ require (
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20220728213248-dd149ef739b9 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
