@@ -27,3 +27,6 @@ make faceit
 * **http://localhost:8080/swagger/#/  
   Mongo Express to check it's grpc and http works in database
 * **http://localhost:8081/
+  Postman Collection
+* https://www.getpostman.com/collections/766b10b63ff5c0a74db6
+
