@@ -1,5 +1,5 @@
 BIN_DIR = bin
-PROTO_DIR = proto
+PROTO_DIR = pb
 SERVER_DIR = server
 CLIENT_DIR = client
 
@@ -37,33 +37,18 @@ else
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: faceit
-project := faceit
 
-all: $(project) ## Generate Pbs and build
-
-faceit: $@ ## Generate Pbs and build for faceit
-
-$(project):
-	@${CHECK_DIR_CMD}
-	protoc -I$@/${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. $@/${PROTO_DIR}/*.proto
-	go build -o ${BIN_DIR}/$@/${SERVER_BIN} ./$@/${SERVER_DIR}
-	go build -o ${BIN_DIR}/$@/${CLIENT_BIN} ./$@/${CLIENT_DIR}
-
+proto:
+	rm -f pb/*.go
+	rm -f doc/swagger/*.swagger.json
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=faceit \
+	proto/*.proto
+	statik -src=./doc/swagger -dest=./doc
 test: all ## Launch tests
 	go test ./...
-
-clean: clean_faceit ## Clean generated files
-	${RM_F_CMD} ssl/*.crt
-	${RM_F_CMD} ssl/*.csr
-	${RM_F_CMD} ssl/*.key
-	${RM_F_CMD} ssl/*.pem
-	${RM_RF_CMD} ${BIN_DIR}
-
-clean_faceit: ## Clean generated files for faceit
-	${RM_F_CMD} faceit/${PROTO_DIR}/*.pb.go
-
-rebuild: clean all ## Rebuild the whole project
 
 about: ## Display info related to the build
 	@echo "OS: ${OS}"

@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/aleksbgs/projectf/faceit/proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+
+message User {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string nickname = 4;
+  string password = 5;
+  string email = 6;
+  string country = 7;
+  string created_at = 8;
+  string updated_at = 9;
+  string deleted_at = 10;
+}
+
+message UserId {
+  string id = 1;
+}
+service UserService {
+  rpc CreateUser(User) returns (UserId){
+    option (google.api.http) = {
+      post: "/v1/create_user"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to create a new user";
+      summary: "Create new user";
+    };
+  }
+  rpc ReadUser(UserId) returns (User);
+  rpc UpdateUser(User) returns (google.protobuf.Empty);
+  rpc DeleteUser(UserId) returns (google.protobuf.Empty);
+  rpc ListUsers(google.protobuf.Empty) returns (stream User);
+
+}
+
+
