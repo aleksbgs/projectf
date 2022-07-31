@@ -24,6 +24,18 @@ message User {
 message UserId {
   string id = 1;
 }
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Face It";
+    version: "1.0";
+    contact: {
+      name: "Face It";
+      url: "https://github.com/aleksbgs/projectf";
+      email: "amarkovic29@gmail.com";
+    };
+  };
+};
 service UserService {
   rpc CreateUser(User) returns (UserId){
     option (google.api.http) = {

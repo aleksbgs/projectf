@@ -1,8 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "user.proto",
-    "version": "version not set"
+    "title": "Face It",
+    "version": "1.0",
+    "contact": {
+      "name": "Face It",
+      "url": "https://github.com/aleksbgs/projectf",
+      "email": "amarkovic29@gmail.com"
+    }
   },
   "tags": [
     {
