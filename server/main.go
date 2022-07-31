@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "github.com/aleksbgs/projectf/doc/statik"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -67,6 +68,8 @@ func runGatewayServer() {
 	})
 
 	grpcMux := runtime.NewServeMux(jsonOption)
+	mux := http.NewServeMux()
+	mux.Handle("/", grpcMux)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -75,11 +78,13 @@ func runGatewayServer() {
 	if err != nil {
 		log.Fatal("cannot register handler server:", err)
 	}
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal("cannot create statik fs:", err.Error())
+	}
 
-	mux := http.NewServeMux()
-	mux.Handle("/", grpcMux)
-
-	//registerSwaggerAPI(mux)
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
+	mux.Handle("/swagger/", swaggerHandler)
 
 	listener, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
@@ -91,15 +96,5 @@ func runGatewayServer() {
 	if err != nil {
 		log.Fatal("cannot start HTTP gateway server:", err)
 	}
-}
-
-func registerSwaggerAPI(mux *http.ServeMux) {
-	statikFS, err := fs.New()
-	if err != nil {
-		log.Fatal("cannot create statik fs:", err.Error())
-	}
-
-	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
-	mux.Handle("/swagger/", swaggerHandler)
 
 }
