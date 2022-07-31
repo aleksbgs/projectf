@@ -17,6 +17,11 @@ import (
 )
 
 var addr string = "0.0.0.0:50051"
+var collection *mongo.Collection
+
+type ServerPb struct {
+	pb.UserServiceServer
+}
 
 func main() {
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://root:root@localhost:27017/"))
@@ -33,6 +38,7 @@ func main() {
 
 	go runGatewayServer()
 	runGrpcServer()
+
 }
 func runGrpcServer() {
 	lis, err := net.Listen("tcp", addr)
@@ -44,7 +50,7 @@ func runGrpcServer() {
 	log.Printf("Listening grpc at %s\n", addr)
 
 	s := grpc.NewServer()
-	pb.RegisterUserServiceServer(s, &Server{})
+	pb.RegisterUserServiceServer(s, &ServerPb{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v\n", err)
 	}
@@ -65,7 +71,7 @@ func runGatewayServer() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	err := pb.RegisterUserServiceHandlerServer(ctx, grpcMux, &Server{})
+	err := pb.RegisterUserServiceHandlerServer(ctx, grpcMux, &ServerPb{})
 	if err != nil {
 		log.Fatal("cannot register handler server:", err)
 	}
@@ -73,13 +79,7 @@ func runGatewayServer() {
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	statikFS, err := fs.New()
-	if err != nil {
-		log.Fatal("cannot create statik fs:", err)
-	}
-
-	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
-	mux.Handle("/swagger/", swaggerHandler)
+	//registerSwaggerAPI(mux)
 
 	listener, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
@@ -91,4 +91,15 @@ func runGatewayServer() {
 	if err != nil {
 		log.Fatal("cannot start HTTP gateway server:", err)
 	}
+}
+
+func registerSwaggerAPI(mux *http.ServeMux) {
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal("cannot create statik fs:", err.Error())
+	}
+
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
+	mux.Handle("/swagger/", swaggerHandler)
+
 }

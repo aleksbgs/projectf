@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-func (*Server) CreateUser(ctx context.Context, in *pb.User) (*pb.UserId, error) {
+func (*ServerPb) CreateUser(ctx context.Context, in *pb.User) (*pb.UserId, error) {
 	log.Printf("Create User was invoked with %v\n", in)
 
 	data := UserItem{
