@@ -20,10 +20,10 @@ make faceit
 ```
 
 
-* GRPC HEALTH PROBE
+* GRPC HEALTH PROBE UserService
 * go install github.com/grpc-ecosystem/grpc-health-probe@v0.4.8
 ```shell
-grpc-health-probe -addr="0.0.0.0:50051" -service=""
+grpc-health-probe -addr="0.0.0.0:50051" -service="user.UserService"
 ```
 
 
