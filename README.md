@@ -16,9 +16,10 @@ make faceit
 * start grpc/http server and grpc client 
 ```shell
 ./bin/server
+```
+```shell
 ./bin/client
 ```
-
 
 * GRPC HEALTH PROBE UserService
 * go install github.com/grpc-ecosystem/grpc-health-probe@v0.4.8

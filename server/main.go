@@ -6,17 +6,15 @@ import (
 	pb "github.com/aleksbgs/projectf/pb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"net"
 	"net/http"
-	"time"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 var addr string = "0.0.0.0:50051"
@@ -59,12 +57,8 @@ func runGrpcServer() {
 		for {
 			status := healthpb.HealthCheckResponse_SERVING
 			// Check if user Service is valid
-			if time.Now().Second()%2 == 0 {
-				status = healthpb.HealthCheckResponse_NOT_SERVING
-			}
 			healthServer.SetServingStatus(pb.UserService_ServiceDesc.ServiceName, status)
 			healthServer.SetServingStatus("", status)
-			time.Sleep(1 * time.Second)
 		}
 	}()
 
