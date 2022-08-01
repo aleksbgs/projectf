@@ -3,18 +3,20 @@ package main
 import (
 	"context"
 	_ "github.com/aleksbgs/projectf/doc/statik"
+	pb "github.com/aleksbgs/projectf/pb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
 	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"net"
 	"net/http"
-
-	pb "github.com/aleksbgs/projectf/pb"
-	"google.golang.org/grpc"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 var addr string = "0.0.0.0:50051"
@@ -51,6 +53,25 @@ func runGrpcServer() {
 	log.Printf("Listening grpc at %s\n", addr)
 
 	s := grpc.NewServer()
+	//health server
+	healthServer := health.NewServer()
+	go func() {
+		for {
+			status := healthpb.HealthCheckResponse_SERVING
+			// Check if user Service is valid
+			if time.Now().Second()%2 == 0 {
+				status = healthpb.HealthCheckResponse_NOT_SERVING
+			}
+			healthServer.SetServingStatus(pb.UserService_ServiceDesc.ServiceName, status)
+			healthServer.SetServingStatus("", status)
+			time.Sleep(1 * time.Second)
+		}
+	}()
+
+	healthpb.RegisterHealthServer(s, healthServer)
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus(pb.UserService_ServiceDesc.ServiceName, healthpb.HealthCheckResponse_SERVING)
+
 	pb.RegisterUserServiceServer(s, &ServerPb{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v\n", err)

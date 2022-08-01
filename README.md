@@ -20,6 +20,13 @@ make faceit
 ```
 
 
+* GRPC HEALTH PROBE
+* go install github.com/grpc-ecosystem/grpc-health-probe@v0.4.8
+```shell
+grpc-health-probe -addr="0.0.0.0:50051" -service=""
+```
+
+
 
 * **grpc and http Gateway,** exposes api for accounts management
 * **User,** account management grpc service, responsible for CRUD operations on user accounts
